@@ -1,0 +1,78 @@
+parameters:
+    curl.class: Curl\Curl
+    crowd_service.class: Nordeus\CrowdUserBundle\CrowdService\CrowdService
+    crowd.user_provider.class: Nordeus\CrowdUserBundle\Security\User\UserProvider
+    crowd.security.authentication.provider.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
+    crowd.security.authentication.listener.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
+    crowd.security.authentication.listener.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener
+    crowd.security.authentication.listener.remember_me.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdRememberMeAuthenticationListener
+    crowd.security.authentication.success_handler.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler
+    crowd.security.remember_me.service.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdRememberMeService
+    crowd.security.logout.handler.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler
+    crowd.security.response_listener.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdResponseListener
+    crowd.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
+
+services:
+    curl:
+        class: "%curl.class%"
+
+    crowd.service:
+        class: "%crowd_service.class%"
+        arguments:
+            app_name: "%nordeus_crowd_user.crowd_application_name%"
+            app_password: "%nordeus_crowd_user.crowd_application_password%"
+            service_url: "%nordeus_crowd_user.crowd_service_url%"
+            baseUri: "%nordeus_crowd_user.service_uri%"
+            curl: "@curl"
+            curl_timeout: "%nordeus_crowd_user.curl_timeout%"
+            connection_retries: "%nordeus_crowd_user.connection_retries%"
+            logger: "@logger"
+
+    crowd.user_provider:
+        class: "%crowd.user_provider.class%"
+        arguments:
+            crowd_service: "@crowd.service"
+            roles_to_crowd_group.map: "%nordeus_crowd_user.roles_to_groups%"
+            user_refresh_time: "%nordeus_crowd_user.user_refresh_time%"
+            user_class: "%nordeus_crowd_user.user_class%"
+            logger: "@logger"
+
+    crowd.security.authentication.provider:
+        class: "%crowd.security.authentication.provider.class%"
+        arguments: ["", "@logger"]
+
+    crowd.security.authentication.listener.login:
+        class: "%crowd.security.authentication.listener.login.class%"
+        parent: security.authentication.listener.abstract
+        abstract: true
+        arguments: ["%nordeus_crowd_user.sso_cookie_domain%"]
+
+    crowd.security.authentication.listener.sso:
+        class: "%crowd.security.authentication.listener.sso.class%"
+        arguments: ["@security.token_storage", "@security.authentication.manager", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%", "@logger"]
+
+    crowd.security.authentication.listener.remember_me:
+        class: "%crowd.security.authentication.listener.remember_me.class%"
+        arguments: ["@security.token_storage", "", "@security.authentication.manager", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%", "@logger", "@event_dispatcher"]
+
+    crowd.security.authentication.success_handler.login:
+        class: "%crowd.security.authentication.success_handler.login.class%"
+        arguments: ["@security.http_utils", "", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%"]
+
+    crowd.security.authentication.rememberme.services:
+        class: "%crowd.security.remember_me.service.class%"
+        arguments: ["", "", "%nordeus_crowd_user.remember_me_signature%", "@logger"]
+
+    crowd.security.logout.handler.sso:
+        class: "%crowd.security.logout.handler.sso.class%"
+        arguments: ["%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%"]
+
+    crowd.security.response_listener:
+        class: "%crowd.security.response_listener.class%"
+        tags:
+            - name: "kernel.event_subscriber"
+
+    crowd.access_denied_handler:
+        class: "%crowd.access_denied_handler.class%"
+        arguments: ["@http_kernel", "@security.http_utils", "@router.default"]
+

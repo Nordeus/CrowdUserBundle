@@ -1,0 +1,29 @@
+{
+    "name": "nordeus/crowd-user-bundle",
+    "description": "CrowdUserBundle is Symfony bundle used for fetching users and authenticating them against Atlassian Crowd",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Igor Eric",
+            "email": "igore@nordeus.com"
+        },
+        {
+            "name": "Djordje Cvijic",
+            "email": "djordje.cvijic.etf@gmail.com"
+        }
+    ],
+    "licence": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "php-curl-class/php-curl-class": "~6",
+        "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
+        "symfony/symfony" : ">=2.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0"
+    },
+    "autoload": {
+        "psr-0": { "Nordeus\\CrowdUserBundle": "" }
+    },
+    "target-dir": "Nordeus/CrowdUserBundle"
+}

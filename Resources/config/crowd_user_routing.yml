@@ -1,0 +1,3 @@
+nordeus_crowd_user:
+    resource: "@NordeusCrowdUserBundle/Controller/SecurityController.php"
+    type: annotation

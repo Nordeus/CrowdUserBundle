@@ -1,0 +1,19 @@
+<form action="{{ path("nordeus_crowd_user_login_check") }}" method="post">
+	<h3>Login to your account</h3>
+
+	<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+	<input type="text" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="Username" />
+	<input type="password" id="password" name="_password" required="required" placeholder="Password" />
+
+	{% if error %}
+		<div class="loginError">{{ error }}</div>
+	{% endif %}
+
+	<div class="checkbox">
+		<label for="remember_me">
+			<input type="checkbox" id="remember_me" name="_remember_me" value="on" /> Remember me
+		</label>
+	</div>
+
+	<input type="submit" id="loginButton" class="btn btn-default" name="_submit" value="Submit" />
+</form>
