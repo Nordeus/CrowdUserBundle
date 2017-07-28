@@ -57,7 +57,7 @@ class Configuration implements ConfigurationInterface {
 					->defaultValue('/crowd/rest/usermanagement/1/')
 				->end()
 				->integerNode('curl_timeout')
-					->defaultValue(2)
+					->defaultValue(10)
 					->min(1)
 				->end()
 				->integerNode('connection_retries')
