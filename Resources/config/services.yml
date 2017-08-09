@@ -19,23 +19,23 @@ services:
     crowd.service:
         class: "%crowd_service.class%"
         arguments:
-            app_name: "%nordeus_crowd_user.crowd_application_name%"
-            app_password: "%nordeus_crowd_user.crowd_application_password%"
-            service_url: "%nordeus_crowd_user.crowd_service_url%"
-            baseUri: "%nordeus_crowd_user.service_uri%"
-            curl: "@curl"
-            curl_timeout: "%nordeus_crowd_user.curl_timeout%"
-            connection_retries: "%nordeus_crowd_user.connection_retries%"
-            logger: "@logger"
+            $appName: "%nordeus_crowd_user.crowd_application_name%"
+            $appPassword: "%nordeus_crowd_user.crowd_application_password%"
+            $serviceUrl: "%nordeus_crowd_user.crowd_service_url%"
+            $baseUri: "%nordeus_crowd_user.service_uri%"
+            $curl: "@curl"
+            $curlTimeout: "%nordeus_crowd_user.curl_timeout%"
+            $crowdConnectionFailureRetries: "%nordeus_crowd_user.connection_retries%"
+            $logger: "@logger"
 
     crowd.user_provider:
         class: "%crowd.user_provider.class%"
         arguments:
-            crowd_service: "@crowd.service"
-            roles_to_crowd_group.map: "%nordeus_crowd_user.roles_to_groups%"
-            user_refresh_time: "%nordeus_crowd_user.user_refresh_time%"
-            user_class: "%nordeus_crowd_user.user_class%"
-            logger: "@logger"
+            $crowdService: "@crowd.service"
+            $rolesToCrowdGroupsMap: "%nordeus_crowd_user.roles_to_groups%"
+            $userRefreshTime: "%nordeus_crowd_user.user_refresh_time%"
+            $userClass: "%nordeus_crowd_user.user_class%"
+            $logger: "@logger"
 
     crowd.security.authentication.provider:
         class: "%crowd.security.authentication.provider.class%"

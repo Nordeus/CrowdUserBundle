@@ -15,10 +15,10 @@ class CrowdService {
 	protected $curl;
 	protected $crowdConnectionFailureRetries;
 	
-	public function __construct($appName, $appPassword, $url, $baseUri, Curl $curl, $curlTimeout, $crowdConnectionFailureRetries, $logger = null) {
+	public function __construct($appName, $appPassword, $serviceUrl, $baseUri, Curl $curl, $curlTimeout, $crowdConnectionFailureRetries, $logger = null) {
 		$this->appName = $appName;
 		$this->appPassword = $appPassword;
-		$this->url = $url . $baseUri;
+		$this->url = $serviceUrl . $baseUri;
 		$this->crowdConnectionFailureRetries = $crowdConnectionFailureRetries;
 		$this->curl = $curl;
 		$this->curl->setOpt(CURLOPT_CONNECTTIMEOUT, $curlTimeout);
