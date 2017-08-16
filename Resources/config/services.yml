@@ -1,5 +1,5 @@
 parameters:
-    curl.class: Curl\Curl
+    crowd.curl.class: Curl\Curl
     crowd_service.class: Nordeus\CrowdUserBundle\CrowdService\CrowdService
     crowd.user_provider.class: Nordeus\CrowdUserBundle\Security\User\UserProvider
     crowd.security.authentication.provider.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
@@ -13,8 +13,8 @@ parameters:
     crowd.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
 
 services:
-    curl:
-        class: "%curl.class%"
+    crowd.curl:
+        class: "%crowd.curl.class%"
 
     crowd.service:
         class: "%crowd_service.class%"
@@ -23,7 +23,7 @@ services:
             $appPassword: "%nordeus_crowd_user.crowd_application_password%"
             $serviceUrl: "%nordeus_crowd_user.crowd_service_url%"
             $baseUri: "%nordeus_crowd_user.service_uri%"
-            $curl: "@curl"
+            $curl: "@crowd.curl"
             $curlTimeout: "%nordeus_crowd_user.curl_timeout%"
             $crowdConnectionFailureRetries: "%nordeus_crowd_user.connection_retries%"
             $logger: "@logger"
