@@ -11,6 +11,10 @@ parameters:
     crowd.security.logout.handler.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler
     crowd.security.response_listener.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdResponseListener
     crowd.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
+    crowd.rest.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\Rest\AccessDeniedHandler
+    crowd.rest.unauthorized_entry_point_handler.class: Nordeus\CrowdUserBundle\Util\Rest\UnauthorizedEntryPointHandler
+    crowd.rest.login_failure_handler.class: Nordeus\CrowdUserBundle\Util\Rest\LoginFailureHandler
+    crowd.rest.logout_success_handler.class: Nordeus\CrowdUserBundle\Util\Rest\LogoutSuccessHandler
 
 services:
     crowd.curl:
@@ -76,3 +80,16 @@ services:
         class: "%crowd.access_denied_handler.class%"
         arguments: ["@http_kernel", "@security.http_utils", "@router.default"]
 
+    crowd.rest.access_denied_handler:
+        class: "%crowd.rest.access_denied_handler.class%"
+
+    crowd.rest.unauthorized_entry_point_handler:
+        class: "%crowd.rest.unauthorized_entry_point_handler.class%"
+
+    crowd.rest.login_failure_handler:
+        class: "%crowd.rest.login_failure_handler.class%"
+        arguments: ["@http_kernel", "@security.http_utils"]
+
+    crowd.rest.logout_success_handler:
+        class: "%crowd.rest.logout_success_handler.class%"
+        arguments: ["@security.http_utils"]
