@@ -36,8 +36,9 @@ class CrowdLoginSuccessHandler implements AuthenticationSuccessHandlerInterface 
 	 */
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
 		$response = $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-		$cookie = new Cookie($this->ssoCookieName, $token->getUser()->getCrowdSessionToken(), 0, '/', '.' . $this->ssoCookieDomain);
 
+		$crowdSessionToken = $token->getUser()->getCrowdUser()->getCrowdSessionToken();
+		$cookie = new Cookie($this->ssoCookieName, $crowdSessionToken, 0, '/', '.' . $this->ssoCookieDomain);
 		$response->headers->setCookie($cookie);
 
 		return $response;

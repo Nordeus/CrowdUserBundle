@@ -64,10 +64,13 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 
 		$token = $this->tokenStorage->getToken();
 		$crowdCookieSessionToken = $request->cookies->get($this->ssoCookieNameForReading);
-		if ($token && ($token instanceof CrowdAuthenticationToken) && $token->getUser()->getCrowdSessionToken() == $crowdCookieSessionToken) {
-			$token->setAuthenticated(true);
-			return;
 
+		if (
+			$token && ($token instanceof CrowdAuthenticationToken)
+			&& $token->getUser()->getCrowdUser()->getCrowdSessionToken() == $crowdCookieSessionToken
+		){
+				$token->setAuthenticated(true);
+				return;
 		}
 
 

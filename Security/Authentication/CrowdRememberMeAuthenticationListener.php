@@ -74,7 +74,8 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 			$this->tokenStorage->setToken($token);
 
 			// Set a cookie to the attribute, afterwards CrowdResponseListener will set this cookie to the Response object
-			$ssoCookie = new Cookie($this->ssoCookieName, $token->getUser()->getCrowdSessionToken(), 0, '/', '.' . $this->ssoCookieDomain);
+			$crowdSessionToken = $token->getUser()->getCrowdUser()->getCrowdSessionToken();
+			$ssoCookie = new Cookie($this->ssoCookieName, $crowdSessionToken, 0, '/', '.' . $this->ssoCookieDomain);
 			$request->attributes->set(self::SET_SSO_COOKIE_ATTR_NAME, $ssoCookie);
 
 			if (null !== $this->dispatcher) {

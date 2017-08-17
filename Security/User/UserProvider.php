@@ -54,24 +54,25 @@ class UserProvider implements UserProviderInterface {
 	 *
 	 * @param CrowdUser $user
 	 * @throws UsernameNotFoundException
-	 * @return UserInterface
+	 * @return CrowdAppUserInterface
 	 */
 	public function refreshUser(UserInterface $user) {
 		if (!$this->supportsClass(get_class($user))) {
 			return $user;
 		}
-		$lastTimeRefreshed = $user->getLastTimeRefreshed();
 
+		$crowdUser = $user->getCrowdUser();
+		$lastTimeRefreshed = $crowdUser->getLastTimeRefreshed();
 		if (empty($lastTimeRefreshed) || (time() - $lastTimeRefreshed > $this->userRefreshTime)) {
 			try {
-				$userRawData = $this->crowdService->getUserFromToken($user->getCrowdSessionToken());
-				$user->initWithCrowdData($userRawData);
-				$userRoles = $this->getUserRolesByUsername($user->getUsername());
-				$user->setRoles($userRoles);
-				$user->setLastTimeRefreshed(time());
-				return $user;
+				$userRawData = $this->crowdService->getUserFromToken($crowdUser->getCrowdSessionToken());
+				$crowdUser->initWithCrowdData($userRawData);
 
+				$userRoles = $this->getUserRolesByUsername($crowdUser->getUsername());
+				$crowdUser->setRoles($userRoles);
 
+				$crowdUser->setLastTimeRefreshed(time());
+				return $this->getAppUser($crowdUser);
 			} catch (CrowdException $e) {
 				throw new UsernameNotFoundException('User can not be refreshed.', 0, $e);
 			}
@@ -83,8 +84,7 @@ class UserProvider implements UserProviderInterface {
 	 * {@inheritdoc}
 	 */
 	public function supportsClass($class) {
-		$userClass = 'Nordeus\CrowdUserBundle\Security\User\CrowdUser';
-		return $userClass === $class || is_subclass_of($class, $userClass);
+		return in_array(CrowdAppUserInterface::class, class_implements($class));
 	}
 
 	/**
@@ -106,11 +106,11 @@ class UserProvider implements UserProviderInterface {
 	}
 
 	/**
-	 * Gets User from Crowd by Crowd session token. 
+	 * Gets User from Crowd by Crowd session token.
 	 *
 	 * @param string $crowdSessionToken
 	 * @throws CrowdException
-	 * @return CrowdUser
+	 * @return CrowdAppUserInterface
 	 */
 	public function getUserByToken($crowdSessionToken) {
 		$userRawData = $this->crowdService->getUserFromToken($crowdSessionToken);
@@ -119,8 +119,8 @@ class UserProvider implements UserProviderInterface {
 
 		$userRoles = $this->getUserRolesByUsername($user->getUsername());
 		$user->setRoles($userRoles);
-		return $user;
 
+		return $this->getAppUser($user);
 	}
 
 	/**
@@ -130,7 +130,7 @@ class UserProvider implements UserProviderInterface {
 	 * @param string $username
 	 * @param boolean $expandUserWithCrowdAttributes
 	 * @throws CrowdException
-	 * @return CrowdUser
+	 * @return CrowdAppUserInterface
 	 */
 	public function getUserByUsername($username, $expandUserWithCrowdAttributes = false) {
 		$userRawData = $this->crowdService->getUserDataFromName($username, $expandUserWithCrowdAttributes);
@@ -139,8 +139,8 @@ class UserProvider implements UserProviderInterface {
 
 		$userRoles = $this->getUserRolesByUsername($user->getUsername());
 		$user->setRoles($userRoles);
-		return $user;
 
+		return $this->getAppUser($user);
 	}
 
 	/**
@@ -186,6 +186,14 @@ class UserProvider implements UserProviderInterface {
 	protected function createUser() {
 		$user = new $this->userClass;
 		return $user;
+	}
+
+	/**
+	 * @param CrowdUser $crowdUser
+	 * @return CrowdAppUserInterface
+	 */
+	protected function getAppUser(CrowdUser $crowdUser) {
+		return $crowdUser;
 	}
 
 }

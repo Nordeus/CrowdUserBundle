@@ -2,9 +2,13 @@
 
 namespace Nordeus\CrowdUserBundle\Security\User;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+class CrowdUser implements CrowdAppUserInterface {
 
-class CrowdUser implements UserInterface {
+	/**
+	 * @var string
+	 */
+	protected $crowdUniqueKey;
+
 	/**
 	 * @var string
 	 */
@@ -61,6 +65,7 @@ class CrowdUser implements UserInterface {
 	}
 
 	public function initWithCrowdData($crowdData) {
+		$this->crowdUniqueKey = substr($crowdData['key'], strpos($crowdData['key'], ':') + 1);
 		$this->username = $crowdData['name'];
 
 		if (!empty($crowdData['first-name'])) {
@@ -88,6 +93,15 @@ class CrowdUser implements UserInterface {
 		if (!empty($crowdData['attributes']['attributes'])) {
 			$this->addAttributes($crowdData['attributes']['attributes']);
 		}
+	}
+
+	public function getCrowdUniqueKey() {
+		return $this->crowdUniqueKey;
+	}
+
+	public function setCrowdUniqueKey($crowdUniqueKey) {
+		$this->crowdUniqueKey = $crowdUniqueKey;
+		return $this;
 	}
 
 	public function getUsername() {
@@ -206,5 +220,9 @@ class CrowdUser implements UserInterface {
 	}
 
 	public function eraseCredentials() {
+	}
+
+	function getCrowdUser() {
+		return $this;
 	}
 }
