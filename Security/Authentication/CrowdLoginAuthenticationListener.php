@@ -40,7 +40,7 @@ class CrowdLoginAuthenticationListener extends AbstractAuthenticationListener {
 		$this->ssoCookieDomain = $ssoCookieDomain;
 		$this->csrfTokenManager = $csrfTokenManager;
 	}
-	
+
 	/**
 	 *  {@inheritdoc}
 	 */
@@ -72,7 +72,7 @@ class CrowdLoginAuthenticationListener extends AbstractAuthenticationListener {
 
 		$token = new CrowdAuthenticationToken($username);
 		$token->setPlainPassword($password);
-		
+
 		return $this->authenticationManager->authenticate($token);
 	}
 }

@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CrowdResponseListener implements EventSubscriberInterface {
-	
+
 	/**
 	 * @param FilterResponseEvent $event
 	 */
@@ -18,7 +18,7 @@ class CrowdResponseListener implements EventSubscriberInterface {
 		if ($request->attributes->has(CrowdRememberMeAuthenticationListener::SET_SSO_COOKIE_ATTR_NAME)) {
 			$response->headers->setCookie($request->attributes->get(CrowdRememberMeAuthenticationListener::SET_SSO_COOKIE_ATTR_NAME));
 		}
-		
+
 		if ($request->attributes->has(CrowdSSOAuthenticationListener::CANCEL_SSO_COOKIE_ATTR_NAME)) {
 			$response->headers->setCookie($request->attributes->get(CrowdSSOAuthenticationListener::CANCEL_SSO_COOKIE_ATTR_NAME));
 		}

@@ -36,10 +36,10 @@ class CrowdLoginSuccessHandler implements AuthenticationSuccessHandlerInterface 
 	 */
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
 		$response = $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-		
 		$cookie = new Cookie($this->ssoCookieName, $token->getUser()->getCrowdSessionToken(), 0, '/', '.' . $this->ssoCookieDomain);
+
 		$response->headers->setCookie($cookie);
-		
+
 		return $response;
 	}
 
@@ -70,20 +70,20 @@ class CrowdLoginSuccessHandler implements AuthenticationSuccessHandlerInterface 
 		if ($this->options['always_use_default_target_path']) {
 			return $this->options['default_target_path'];
 		}
-	
+
 		if ($targetUrl = $request->get($this->options['target_path_parameter'], null)) {
 			return $targetUrl;
 		}
-		
+
 		if ($targetUrl = $request->getSession()->get("_security.$this->providerKey.target_path")) {
 			$request->getSession()->remove("_security.$this->providerKey.target_path");
 			return $targetUrl;
 		}
-	
+
 		if ($this->options['use_referer'] && ($targetUrl = $request->headers->get('Referer')) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])) {
 			return $targetUrl;
 		}
-	
+
 		return $this->options['default_target_path'];
 	}
 }

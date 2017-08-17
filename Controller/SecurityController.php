@@ -19,7 +19,7 @@ class SecurityController extends Controller {
 	public function loginAction(Request $request) {
 		$session = $request->getSession();
 		$error = '';
-		
+
 		if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
 			$error = $request->attributes->get(Security::AUTHENTICATION_ERROR);
 		} elseif ($session && $session->has(Security::AUTHENTICATION_ERROR)) {
@@ -30,13 +30,13 @@ class SecurityController extends Controller {
 		if ($error) {
 			$error = $error->getMessage();
 		}
-		
+
 		$lastUsername = $session ? $session->get(Security::LAST_USERNAME) : '';
 		$csrfToken = null;
 		if ($this->has('security.csrf.token_manager')) {
 			$csrfToken = $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue();
 		}
-		
+
 		return array(
 			'last_username' => $lastUsername,
 			'error' => $error,

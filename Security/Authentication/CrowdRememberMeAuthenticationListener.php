@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Psr\Log\LoggerInterface;
 
 class CrowdRememberMeAuthenticationListener implements ListenerInterface {
-	
+
 	/**
 	 * This attribute name is used as an indication for CrowdResponseListener to set sso cookie,
 	 * after remember-me listener authenticates user with remeber-me cookie.
@@ -23,7 +23,7 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 	 * @var string
 	 */
 	const SET_SSO_COOKIE_ATTR_NAME = '_security_set_sso_cookie';
-	
+
 	protected $tokenStorage;
 	protected $rememberMeServices;
 	protected $authenticationManager;
@@ -31,8 +31,8 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 	protected $dispatcher;
 	protected $ssoCookieName;
 	protected $ssoCookieDomain;
-	
-	
+
+
 	/**
 	 * Constructor.
 	 *
@@ -53,7 +53,7 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 		$this->ssoCookieName = $ssoCookieName;
 		$this->ssoCookieDomain = $ssoCookieDomain;
 	}
-	
+
 	/**
 	 * Handles remember-me cookie based authentication.
 	 *
@@ -63,7 +63,7 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 		if (null !== $this->tokenStorage->getToken()) {
 			return;
 		}
-		
+
 		$request = $event->getRequest();
 		$token = $this->rememberMeServices->autoLogin($request);
 		if (!$token) return;

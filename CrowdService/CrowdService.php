@@ -8,13 +8,13 @@ use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdUnexpectedException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdServerConnectionException;
 
 class CrowdService {
-	
+
 	private $appPassword;
 	protected $appName;
 	protected $url;
 	protected $curl;
 	protected $crowdConnectionFailureRetries;
-	
+
 	public function __construct($appName, $appPassword, $serviceUrl, $baseUri, Curl $curl, $curlTimeout, $crowdConnectionFailureRetries, $logger = null) {
 		$this->appName = $appName;
 		$this->appPassword = $appPassword;
@@ -70,12 +70,12 @@ class CrowdService {
 			$errClass = str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower($data['reason']))));
 			$errClass = 'Nordeus\\CrowdUserBundle\\CrowdService\\Exceptions\\' . $errClass . 'Exception';
 			$msg = isset($data['message']) ? $data['message'] : null;
-			
+
 			if (class_exists($errClass)) {
 				return new $errClass($msg);
 			}
 		}
-		
+
 		return new CrowdUnexpectedException('Unknown error received: ', $action, $data, $status);
 	}
 
@@ -99,17 +99,17 @@ class CrowdService {
 				)
 			)
 		);
-		
+
 		$action = 'session';
 		$data = $this->getCurlResponse($action, true, json_encode($data), 201);
-		
+
 		if (!isset($data['token'])) {
 			throw new CrowdUnexpectedException('No token field in Crowd response', $action, $data);
 		}
-				
+
 		return $data['token'];
 	}
-	
+
 	/**
 	 * @param string $username
 	 * @throws CrowdException if invalid response is returned from Crowd
@@ -128,17 +128,17 @@ class CrowdService {
 				)
 			)
 		);
-		
+
 		$action = 'session?validate-password=false';
 		$data = $this->getCurlResponse($action, true, json_encode($data), 201);
-		
+
 		if (!isset($data['token'])) {
 			throw new CrowdUnexpectedException('No token field in Crowd response', $action, $data);
 		}
-		
+
 		return $data['token'];
 	}
-	
+
 	/**
 	 * @param string $token Crowd token
 	 * @throws CrowdException if token is not valid or some other invalid response is returned from Crowd
@@ -148,15 +148,15 @@ class CrowdService {
 	public function getUserFromToken($token) {
 		$action = "session/$token";
 		$data = $this->getCurlResponse($action);
-	
+
 		if (!isset($data['user']['name'])) {
 			throw new CrowdUnexpectedException('No user data in Crowd response', $action, $data);
 		}
-	
+
 		$data['user']['token'] = $data['token'];
 		return $data['user'];
 	}
-	
+
 	/**
 	 * @param string $username
 	 * @throws CrowdException if Crowd can't find the user or returns some invalid response
@@ -168,16 +168,16 @@ class CrowdService {
 		if ($expandWithAtrributes) {
 			$action .= '&expand=attributes';
 		}
-	
+
 		$data = $this->getCurlResponse($action);
-	
+
 		if (!isset($data['name'])) {
 			throw new CrowdUnexpectedException('No user data in Crowd response', $action, $data);
 		}
-		
+
 		return $data;
 	}
-	
+
 	/**
 	 * @param string $username name of the user whose groups you want to load
 	 * @throws CrowdException if Crowd returns invalid response
@@ -187,11 +187,11 @@ class CrowdService {
 	public function getUserGroups($username) {
 		$action = "user/group/nested?username=$username";
 		$data = $this->getCurlResponse($action);
-	
+
 		if (!isset($data['groups'])) {
 			throw new CrowdUnexpectedException('No groups data in Crowd response', $action, $data);
 		}
-	
+
 		$groups = array();
 		foreach ($data['groups'] as $groupData) {
 			if (!isset($groupData['name'])) {
@@ -199,10 +199,10 @@ class CrowdService {
 			}
 			$groups[] = $groupData['name'];
 		}
-	
+
 		return $groups;
 	}
-	
+
 	/**
 	 * @param string $groupName
 	 * @throws CrowdException if Crowd returns invalid response
@@ -212,11 +212,11 @@ class CrowdService {
 	public function getUsersByGroupName($groupName) {
 		$action = "group/user/nested?groupname=$groupName";
 		$data = $this->getCurlResponse($action);
-		
+
 		if (!isset($data['users'])) {
 			throw new CrowdUnexpectedException('No groups data in Crowd response', $action, $data);
 		}
-		
+
 		$usernames = array();
 		foreach ($data['users'] as $user) {
 			if (!isset($user['name'])) {
@@ -224,8 +224,8 @@ class CrowdService {
 			}
 			$usernames[] = $user['name'];
 		}
-		
+
 		return $usernames;
 	}
-	
+
 }

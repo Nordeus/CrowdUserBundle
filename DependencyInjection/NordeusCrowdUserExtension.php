@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  */
 class NordeusCrowdUserExtension extends Extension {
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -22,7 +22,7 @@ class NordeusCrowdUserExtension extends Extension {
 
 		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.yml');
-		
+
 		// All parameters set under 'nordeus_crowd_user' section (defined in DependencyInjection/Configuration.php)
 		// will be set as parameters, afterwards they will be visible in services.yml
 		foreach ($config as $name => $value) {

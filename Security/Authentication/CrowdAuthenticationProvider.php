@@ -17,7 +17,7 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 	/** @var UserProvider */
 	private $userProvider;
 	private $logger;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -47,7 +47,7 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 			$crowdCookieSessionToken = $token->getCrowdCookieToken();
 			$plainPassword = $token->getPlainPassword();
 			$username = $token->getUser();
-			
+
 			if (empty($crowdCookieSessionToken)) {
 				if (!empty($plainPassword)) {
 					// Login Listener
@@ -62,7 +62,7 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 
 			$user = $this->userProvider->getUserByToken($crowdCookieSessionToken);
 			return new CrowdAuthenticationToken($user, $user->getRoles());
-			
+
 		} catch (ApplicationAccessDeniedException $e) {
 			/*
 			 * This exception occurs if authentication failed because user does not have access to the Crowd application.
@@ -78,7 +78,7 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 			throw new AuthenticationException($e->getMessageForUser(), 0, $e);
 		}
 	}
-	
+
 	/**
 	 * {@inheritdoc}
 	 */

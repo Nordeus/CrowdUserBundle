@@ -12,14 +12,14 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Psr\Log\LoggerInterface;
 
 class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandlerInterface {
-	
+
 	const COOKIE_DELIMITER = ':';
-	
+
 	private $rememberMeSignature;
 	protected $userProvider;
 	protected $options;
 	protected $logger;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -34,7 +34,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 		$this->rememberMeSignature = $rememberMeSignature;
 		$this->logger = $logger;
 	}
-	
+
 	/**
 	 * Implementation for RememberMeServicesInterface. This is called when an
 	 * authentication is successful.
@@ -46,18 +46,18 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	public function loginSuccess(Request $request, Response $response, TokenInterface $token) {
 		// Make sure any old remember-me cookies are cancelled
 		$this->cancelCookie($request);
-		
+
 		if (!$this->isRememberMeRequested($request)) {
 			return;
 		}
-		
+
 		// Remove attribute from request that sets a NULL cookie. It was set by $this->cancelCookie()
 		$request->attributes->remove(self::COOKIE_ATTR_NAME);
 
 		$username = $token->getUser()->getUsername();
 		$expires = time() + $this->options['lifetime'];
 		$value = $this->generateCookieValue($username, $expires);
-		
+
 		$response->headers->setCookie(
 			new Cookie(
 					$this->options['name'],
@@ -70,7 +70,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 			)
 		);
 	}
-	
+
 	/**
 	 * Implementation for RememberMeServicesInterface. Deletes the cookie when
 	 * an attempted authentication fails.
@@ -80,7 +80,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	public function loginFail(Request $request) {
 		$this->cancelCookie($request);
 	}
-	
+
 	/**
 	 * Implementation for LogoutHandlerInterface. Deletes the cookie.
 	 *
@@ -91,7 +91,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	public function logout(Request $request, Response $response, TokenInterface $token) {
 		$this->cancelCookie($request);
 	}
-	
+
 	/**
 	 * Implementation of RememberMeServicesInterface. Detects whether a remember-me
 	 * cookie was set, decodes it, checks if it is valid, and returns CrowdAuthenticationToken filled with username.
@@ -104,43 +104,43 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 		if (!$cookie) {
 			return null;
 		}
-		
+
 		try {
 			$cookieParts = $this->decodeCookie($cookie);
-			
+
 			if (count($cookieParts) !== 3) {
 				throw new AuthenticationException('The cookie is invalid.');
 			}
-			
+
 			list($username, $expires, $hash) = $cookieParts;
 			$username = base64_decode($username, true);
-			
+
 			if (!$username) {
 				throw new AuthenticationException($username . ' contains a character from outside the base64 alphabet.');
 			}
-			
+
 			if (time() > $expires) {
 				throw new AuthenticationException('Remeber me credentials has expired');
 			}
-			
+
 			$value = $this->generateCookieHash($username, $expires);
-			
+
 			if ($hash != $value) {
 				throw new AuthenticationException('Remeber me cookie has wrong hash value');
 			}
-			
+
 			return new CrowdAuthenticationToken($username);
-			
+
 		} catch (AuthenticationException $e) {
 			if ($this->logger) {
 				$this->logger->warning($e->getMessage());
 			}
 		}
-		
+
 		$this->cancelCookie($request);
 		return null;
 	}
-	
+
 	/**
 	 * Generates the cookie value.
 	 *
@@ -156,7 +156,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 			$this->generateCookieHash($username, $expires)
 		));
 	}
-	
+
 	/**
 	 * Generates a hash for the cookie to ensure it is not being tempered with
 	 *
@@ -167,7 +167,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	protected function generateCookieHash($username, $expires) {
 		return hash_hmac('sha256', $username.$expires, $this->rememberMeSignature);
 	}
-	
+
 	/**
 	 * Decodes the raw cookie value
 	 *
@@ -177,7 +177,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	protected function decodeCookie($rawCookie) {
 		return explode(self::COOKIE_DELIMITER, base64_decode($rawCookie));
 	}
-	
+
 	/**
 	 * Encodes the cookie parts
 	 *
@@ -187,7 +187,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	protected function encodeCookie(array $cookieParts) {
 		return base64_encode(implode(self::COOKIE_DELIMITER, $cookieParts));
 	}
-	
+
 	/**
 	 * Deletes the remember-me cookie
 	 *
@@ -196,7 +196,7 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 	protected function cancelCookie(Request $request) {
 		$request->attributes->set(self::COOKIE_ATTR_NAME, new Cookie($this->options['name'], null, 1, $this->options['path'], $this->options['domain']));
 	}
-	
+
 	/**
 	 * Checks whether remember-me capabilities were requested
 	 *
@@ -207,9 +207,9 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 		if (true === $this->options['always_remember_me']) {
 			return true;
 		}
-	
+
 		$parameter = $request->get($this->options['remember_me_parameter'], null);
-	
+
 		return $parameter === 'true' || $parameter === 'on' || $parameter === '1' || $parameter === 'yes';
 	}
 }

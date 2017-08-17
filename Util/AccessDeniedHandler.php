@@ -14,11 +14,11 @@ use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
  * this class will serve to handle "access denied" exceptions by writing the error to the security context, and forwarding to login page.
  */
 class AccessDeniedHandler implements AccessDeniedHandlerInterface {
-	
+
 	private $httpKernel;
 	private $httpUtils;
 	private $router;
-	
+
 	/**
 	 * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
 	 * @param \Symfony\Component\Security\Http\HttpUtils $httpUtils
@@ -29,7 +29,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface {
 		$this->httpUtils = $httpUtils;
 		$this->router = $router;
 	}
-	
+
 	/**
 	 * @see \Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface::handle()
 	 */
@@ -40,7 +40,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface {
 		 */
 		$subRequest = $this->httpUtils->createRequest($request, 'nordeus_crowd_user_login');
 		$subRequest->attributes->set(Security::AUTHENTICATION_ERROR, new ApplicationAccessDeniedException());
-		
+
 		return $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 	}
 }

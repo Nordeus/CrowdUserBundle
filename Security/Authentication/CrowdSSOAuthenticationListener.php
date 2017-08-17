@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Psr\Log\LoggerInterface;
 
 class CrowdSSOAuthenticationListener implements ListenerInterface {
-	
+
 	/**
 	 * This attribute name is used as a indication for CrowdResponseListener to cancel sso cookie,
 	 * If SSO Listener tries to authenticate user with cookie token, in case of any error, it should delete cookie
@@ -21,13 +21,13 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 	 * @var string
 	 */
 	const CANCEL_SSO_COOKIE_ATTR_NAME = '_security_cancel_sso_cookie';
-	
+
 	protected $tokenStorage;
 	protected $authenticationManager;
 	protected $ssoCookieName;
 	protected $ssoCookieDomain;
 	protected $ssoCookieNameForReading;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -42,13 +42,13 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 		$this->authenticationManager = $authenticationManager;
 		$this->ssoCookieDomain = $ssoCookieDomain;
 		$this->ssoCookieName = $ssoCookieName;
-		
+
 		// Even though cookie is set with name which has '.',
 		// we can fetch it only with all '_' in its name.
 		// e.g. cookie set as 'crowd.token_key' could be read as 'crowd_token_key'
 		$this->ssoCookieNameForReading = str_replace('.', '_', $ssoCookieName);
 	}
-	
+
 	/**
 	 * Handles SSO cookie based authentication.
 	 * 
@@ -56,27 +56,27 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 	 */
 	public function handle(GetResponseEvent $event) {
 		$request = $event->getRequest();
-		
+
 		if (!$request->cookies->has($this->ssoCookieNameForReading)) {
 			$this->tokenStorage->setToken(null);
 			return;
 		}
-		
+
 		$token = $this->tokenStorage->getToken();
 		$crowdCookieSessionToken = $request->cookies->get($this->ssoCookieNameForReading);
-		
 		if ($token && ($token instanceof CrowdAuthenticationToken) && $token->getUser()->getCrowdSessionToken() == $crowdCookieSessionToken) {
 			$token->setAuthenticated(true);
 			return;
+
 		}
-		
+
 
 		$newToken = new CrowdAuthenticationToken();
 		$newToken->setCrowdCookieToken($crowdCookieSessionToken);
-		
+
 		try {
 			$returnValue = $this->authenticationManager->authenticate($newToken);
-	
+
 			if ($returnValue instanceof CrowdAuthenticationToken) {
 				$returnValue->setAuthenticated(true);
 				$this->tokenStorage->setToken($returnValue);
@@ -100,7 +100,7 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 			$request->attributes->set(self::CANCEL_SSO_COOKIE_ATTR_NAME, $ssoCookie);
 			throw $e;
 		}
-		
+
 		$response = new Response();
 		$response->setStatusCode(403);
 		$event->setResponse($response);

@@ -8,10 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CrowdSSOLogoutHandler implements LogoutHandlerInterface {
-	
+
 	protected $ssoCookieName;
 	protected $ssoCookieDomain;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -22,7 +22,7 @@ class CrowdSSOLogoutHandler implements LogoutHandlerInterface {
 		$this->ssoCookieName = $ssoCookieName;
 		$this->ssoCookieDomain = $ssoCookieDomain;
 	}
-	
+
 	/**
 	 * {@inheritdoc}
 	 */

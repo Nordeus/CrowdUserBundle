@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
  * @see README.md file,  Explanation section.
  */
 class CrowdLoginFactory extends AbstractFactory {
-	
+
 	public function __construct() {
 		$this->addOption('username_parameter', '_username');
 		$this->addOption('password_parameter', '_password');

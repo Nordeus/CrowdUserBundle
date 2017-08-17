@@ -12,7 +12,7 @@ class InvalidUserAuthenticationException extends CrowdException {
 		}
 		parent::__construct($message, $code, $previous);
 	}
-	
+
 	public function getMessageForUser() {
 		return 'Invalid credentials.';
 	}
