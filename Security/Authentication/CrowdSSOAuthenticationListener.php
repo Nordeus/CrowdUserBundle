@@ -58,7 +58,10 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 		$request = $event->getRequest();
 
 		if (!$request->cookies->has($this->ssoCookieNameForReading)) {
-			$this->tokenStorage->setToken(null);
+			$token = $this->tokenStorage->getToken();
+			if ($token instanceof CrowdAuthenticationToken) {
+				$this->tokenStorage->setToken(null);
+			}
 			return;
 		}
 
@@ -68,7 +71,7 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 		if (
 			$token && ($token instanceof CrowdAuthenticationToken)
 			&& $token->getUser()->getCrowdUser()->getCrowdSessionToken() == $crowdCookieSessionToken
-		){
+		) {
 				$token->setAuthenticated(true);
 				return;
 		}

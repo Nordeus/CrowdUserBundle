@@ -4,6 +4,7 @@ namespace Nordeus\CrowdUserBundle\Security\Authentication;
 
 use Nordeus\CrowdUserBundle\Security\User\UserProvider;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
+use Symfony\Component\Security\Core\User\ChainUserProvider;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -25,7 +26,22 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 	 * @param LoggerInterface $logger
 	 */
 	public function __construct(UserProviderInterface $userProvider, LoggerInterface $logger = null) {
-		$this->userProvider = $userProvider;
+		if ($userProvider instanceof UserProvider) {
+			$this->userProvider = $userProvider;
+		} else if ($userProvider instanceof ChainUserProvider) {
+			$chainedProvidersCollection = $userProvider->getProviders();
+			foreach ($chainedProvidersCollection as $chainedProvider) {
+				if ($chainedProvider instanceof UserProvider) {
+					if (empty($this->userProvider)) {
+						$this->userProvider = $chainedProvider;
+					} else {
+						throw new \LogicException('Only single CrowdUserProvider is supported to be chained');
+					}
+				}
+			}
+		} else {
+			throw new \LogicException('Only CrowdUserProvider and ChainedUserProviders are supported');
+		}
 		$this->logger = $logger;
 	}
 
