@@ -70,7 +70,7 @@ class CrowdLoginAuthenticationListener extends AbstractAuthenticationListener {
 
 		$request->getSession()->set(Security::LAST_USERNAME, $username);
 
-		$token = new CrowdAuthenticationToken($username);
+		$token = new CrowdAuthenticationToken(CrowdAuthenticationToken::AUTH_TYPE_LOGIN, $username);
 		$token->setPlainPassword($password);
 
 		return $this->authenticationManager->authenticate($token);

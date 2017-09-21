@@ -166,8 +166,8 @@ class CrowdUser implements CrowdAppUserInterface {
 		$this->attributes = $attributes;
 	}
 
-	public function addAttributes($crowdAtributes) {
-		foreach ($crowdAtributes as $attData) {
+	public function addAttributes($crowdAttributes) {
+		foreach ($crowdAttributes as $attData) {
 			if (isset($attData['name']) && isset($attData['values'])) {
 				$this->attributes[$attData['name']] = $attData['values'];
 			}

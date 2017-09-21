@@ -2,16 +2,16 @@
 
 namespace Nordeus\CrowdUserBundle\Security\Authentication;
 
-use Nordeus\CrowdUserBundle\Security\User\UserProvider;
-use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
-use Symfony\Component\Security\Core\User\ChainUserProvider;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\ApplicationAccessDeniedException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdUnexpectedException;
+use Nordeus\CrowdUserBundle\Security\User\UserProvider;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\ChainUserProvider;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 
@@ -53,31 +53,41 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 	 *  - Login listener - provides username and password
 	 *  - Remember-me listener - provides only username
 	 *
-	 * @param CrowdAuthenticationToken $token
-	 * @throws AuthenticationException
+	 * @param CrowdAuthenticationToken|TokenInterface $token
 	 * @return CrowdAuthenticationToken
+	 * @throws AuthenticationException
 	 * @see \Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface::authenticate()
 	 */
 	public function authenticate(TokenInterface $token) {
 		try {
-			$crowdCookieSessionToken = $token->getCrowdCookieToken();
-			$plainPassword = $token->getPlainPassword();
 			$username = $token->getUser();
+			$authType = $token->getAuthType();
+			$crowdCookieSessionToken = null;
 
-			if (empty($crowdCookieSessionToken)) {
-				if (!empty($plainPassword)) {
-					// Login Listener
-					$crowdCookieSessionToken = $this->userProvider->createCrowdSessionToken($username, $plainPassword);
-				} elseif (!empty($username) && is_string($username)) {
-					// Remember-me listener
-					$crowdCookieSessionToken = $this->userProvider->createCrowdSessionToken($username);
-				} else {
-					return null;
-				}
+			switch ($authType) {
+				case CrowdAuthenticationToken::AUTH_TYPE_SSO:
+					$crowdCookieSessionToken = $token->getCrowdCookieToken();
+					break;
+
+				case CrowdAuthenticationToken::AUTH_TYPE_LOGIN:
+					$password = $token->getPlainPassword();
+					$crowdCookieSessionToken = $this->userProvider->createCrowdSessionToken($username, $password);
+					break;
+
+				case CrowdAuthenticationToken::AUTH_TYPE_REMEMBER_ME:
+					if (!empty($username) && is_string($username)) {
+						$crowdCookieSessionToken = $this->userProvider->createCrowdSessionTokenWithoutPassword($username);
+					} else {
+						return null;
+					}
+					break;
+
+				default:
+					throw new \LogicException("Non of supported authentication types detected: $authType");
 			}
 
 			$user = $this->userProvider->getUserByToken($crowdCookieSessionToken);
-			return new CrowdAuthenticationToken($user, $user->getRoles());
+			return new CrowdAuthenticationToken($authType, $user, $user->getRoles());
 
 		} catch (ApplicationAccessDeniedException $e) {
 			/*

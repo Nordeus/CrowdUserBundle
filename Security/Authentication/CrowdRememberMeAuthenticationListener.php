@@ -18,7 +18,7 @@ class CrowdRememberMeAuthenticationListener implements ListenerInterface {
 
 	/**
 	 * This attribute name is used as an indication for CrowdResponseListener to set sso cookie,
-	 * after remember-me listener authenticates user with remeber-me cookie.
+	 * after remember-me listener authenticates user with remember-me cookie.
 	 *
 	 * @var string
 	 */

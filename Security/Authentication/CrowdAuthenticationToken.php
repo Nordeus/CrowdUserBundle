@@ -6,6 +6,10 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class CrowdAuthenticationToken extends AbstractToken {
 
+	const AUTH_TYPE_SSO = 1;
+	const AUTH_TYPE_LOGIN = 2;
+	const AUTH_TYPE_REMEMBER_ME = 3;
+
 	/**
 	 * It is used by Login Listener to pass user's password to Authentication Provider.
 	 * Even though Authentication Provider should generate new Authentication Token and discard this one (with plain password),
@@ -23,8 +27,17 @@ class CrowdAuthenticationToken extends AbstractToken {
 	 */
 	protected $crowdCookieToken;
 
-	public function __construct($user = '', $roles = array()) {
+	/**
+	 * It is used by CrowdAuthenticationProvider (authentication manager) to determine type of authentication.
+	 * This is required in order to determine whether or not password should be verified.
+	 *
+	 * @var string
+	 */
+	protected $authType;
+
+	public function __construct($authType = 0, $user = '', $roles = array()) {
 		parent::__construct($roles);
+		$this->authType = $authType;
 		$this->setUser($user);
 	}
 
@@ -46,5 +59,9 @@ class CrowdAuthenticationToken extends AbstractToken {
 
 	public function getPlainPassword() {
 		return $this->plainPassword;
+	}
+
+	public function getAuthType() {
+		return $this->authType;
 	}
 }

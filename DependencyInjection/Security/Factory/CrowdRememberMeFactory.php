@@ -13,7 +13,7 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityF
  * Defines CrowdRememberMeAuthenticationListener.
  * Authentication Provider is CrowdAuthenticationProvider, which is common auth. provider for all Crowd's Listeneres.
  * Defines CrowdRememberMeService, attaches the service to CrowdLoginAuthenticationListener. Purpose of it, is that on success login,
- * LoginListener invokes loginSuccess method in CrowdRememberMeService where RemeberMe cookie is set. 
+ * LoginListener invokes loginSuccess method in CrowdRememberMeService where RememberMe cookie is set.
  * 
  * @see README.md file,  Explanation section.
  */
@@ -38,7 +38,7 @@ class CrowdRememberMeFactory implements SecurityFactoryInterface {
 
 		$rememberMeServicesId = 'security.authentication.rememberme.services.crowd.' . $id;
 
-		// add remeberMeService, which is also logout handler to logout listener
+		// add rememberMeService, which is also logout handler to logout listener
 		if ($container->hasDefinition('security.logout_listener.' . $id)) {
 			$logoutListener = $container->getDefinition('security.logout_listener.' . $id);
 			$logoutListener->addMethodCall('addHandler', array(new Reference($rememberMeServicesId)));

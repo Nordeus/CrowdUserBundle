@@ -77,7 +77,7 @@ class CrowdSSOAuthenticationListener implements ListenerInterface {
 		}
 
 
-		$newToken = new CrowdAuthenticationToken();
+		$newToken = new CrowdAuthenticationToken(CrowdAuthenticationToken::AUTH_TYPE_SSO);
 		$newToken->setCrowdCookieToken($crowdCookieSessionToken);
 
 		try {

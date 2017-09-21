@@ -120,16 +120,16 @@ class CrowdRememberMeService implements RememberMeServicesInterface, LogoutHandl
 			}
 
 			if (time() > $expires) {
-				throw new AuthenticationException('Remeber me credentials has expired');
+				throw new AuthenticationException('Remember me credentials has expired');
 			}
 
 			$value = $this->generateCookieHash($username, $expires);
 
 			if ($hash != $value) {
-				throw new AuthenticationException('Remeber me cookie has wrong hash value');
+				throw new AuthenticationException('Remember me cookie has wrong hash value');
 			}
 
-			return new CrowdAuthenticationToken($username);
+			return new CrowdAuthenticationToken(CrowdAuthenticationToken::AUTH_TYPE_REMEMBER_ME, $username);
 
 		} catch (AuthenticationException $e) {
 			if ($this->logger) {

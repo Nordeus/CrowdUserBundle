@@ -88,20 +88,23 @@ class UserProvider implements UserProviderInterface {
 	}
 
 	/**
-	 * Creates Crowd session token.
-	 * If passwrod is provided it means that user comes from Login form,
-	 * otherwise Remeber-me listener tries to authenticate User with username saved in cookie.
+	 * Creates Crowd session token with password (used for login).
 	 *
 	 * @param string $username
 	 * @param string $password
-	 * @throws CrowdException
 	 * @return string
 	 */
-	public function createCrowdSessionToken($username, $password = null) {
-		if (!empty($password)) {
-			return $crowdSessionToken = $this->crowdService->createSessionToken($username, $password);
-		}
+	public function createCrowdSessionToken($username, $password) {
+		return $crowdSessionToken = $this->crowdService->createSessionToken($username, $password);
+	}
 
+	/**
+	 * Creates Crowd session token without password (used for remember me service).
+	 *
+	 * @param string $username
+	 * @return string
+	 */
+	public function createCrowdSessionTokenWithoutPassword($username) {
 		return $crowdSessionToken = $this->crowdService->createSessionTokenWithoutPassword($username);
 	}
 

@@ -27,6 +27,8 @@ class UserProviderTest extends TestCase {
 	const USERNAME = 'testuser';
 	const PASSWORD = 'testuser';
 	const CROWD_SESSION_TOKEN = 'crowdsessiontoken';
+	const CROWD_UNIQUE_KEY = 'crowdUniqueUserKey';
+	const CROWD_DIRECTORY = 'crowdDirectory';
 	const USER_REFRESH_TIME = 10;
 	const USER_CLASS = 'Nordeus\CrowdUserBundle\Tests\util\ExtCrowdUser';
 
@@ -41,6 +43,7 @@ class UserProviderTest extends TestCase {
 		'display-name'	=> 'Tester User',
 		'email'			=> 'testuser@mail.com',
 		'active'		=> true,
+		'key'			=> self:: CROWD_DIRECTORY . ':' . self::CROWD_UNIQUE_KEY,
 		'token'			=> self::CROWD_SESSION_TOKEN,
 	);
 
@@ -95,7 +98,8 @@ class UserProviderTest extends TestCase {
 			->with(self::USERNAME)
 			->will($this->returnValue($this->crowdUserGroups));
 
-		$expectedUser = new CrowdUser($this->crowdUserRawData);
+		$expectedUser = new CrowdUser();
+		$expectedUser->initWithCrowdData($this->crowdUserRawData);
 		$expectedUser->addRole('ROLE_USER');
 
 		$timeBefore = time();
@@ -174,7 +178,7 @@ class UserProviderTest extends TestCase {
 			->will($this->returnValue(self::CROWD_SESSION_TOKEN));
 
 		$this->assertEquals(self::CROWD_SESSION_TOKEN, $this->userProvider->createCrowdSessionToken(self::USERNAME, self::PASSWORD));
-		$this->assertEquals(self::CROWD_SESSION_TOKEN, $this->userProvider->createCrowdSessionToken(self::USERNAME));
+		$this->assertEquals(self::CROWD_SESSION_TOKEN, $this->userProvider->createCrowdSessionTokenWithoutPassword(self::USERNAME));
 	}
 
 
