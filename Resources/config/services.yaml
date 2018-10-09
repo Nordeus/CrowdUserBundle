@@ -24,54 +24,54 @@ services:
             $crowdConnectionFailureRetries: "%nordeus_crowd_user.connection_retries%"
 
     crowd.user_provider:
-        class: "Nordeus\CrowdUserBundle\Security\User\UserProvider"
+        class: Nordeus\CrowdUserBundle\Security\User\UserProvider
         arguments:
             $rolesToCrowdGroupsMap: "%nordeus_crowd_user.roles_to_groups%"
             $userRefreshTime: "%nordeus_crowd_user.user_refresh_time%"
             $userClass: "%nordeus_crowd_user.user_class%"
 
     crowd.security.authentication.provider:
-        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider"
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
         arguments:
             $userProvider: ~
 
     crowd.security.authentication.listener.login:
-        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener"
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
         parent: security.authentication.listener.abstract
         abstract: true
         arguments:
             $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.authentication.listener.sso:
-        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener"
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener
         arguments:
             $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
             $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.authentication.success_handler.login:
-        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler"
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler
         arguments:
             $options: []
             $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
             $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.logout.handler.sso:
-        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler"
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler
         arguments:
             $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
             $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.access_denied_handler:
-        class: "Nordeus\CrowdUserBundle\Util\AccessDeniedHandler"
+        class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
 
     crowd.rest.access_denied_handler:
-        class: "Nordeus\CrowdUserBundle\Util\Rest\AccessDeniedHandler"
+        class: Nordeus\CrowdUserBundle\Util\Rest\AccessDeniedHandler
 
     crowd.rest.unauthorized_entry_point_handler:
-        class: "Nordeus\CrowdUserBundle\Util\Rest\UnauthorizedEntryPointHandler"
+        class: Nordeus\CrowdUserBundle\Util\Rest\UnauthorizedEntryPointHandler
 
     crowd.rest.login_failure_handler:
-        class: "Nordeus\CrowdUserBundle\Util\Rest\LoginFailureHandler"
+        class: Nordeus\CrowdUserBundle\Util\Rest\LoginFailureHandler
 
     crowd.rest.logout_success_handler:
-        class: "Nordeus\CrowdUserBundle\Util\Rest\LogoutSuccessHandler"
+        class: Nordeus\CrowdUserBundle\Util\Rest\LogoutSuccessHandler
