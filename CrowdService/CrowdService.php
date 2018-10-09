@@ -6,6 +6,7 @@ use Curl\Curl;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdUnexpectedException;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\CrowdServerConnectionException;
+use Psr\Log\LoggerInterface;
 
 class CrowdService {
 
@@ -15,7 +16,7 @@ class CrowdService {
 	protected $curl;
 	protected $crowdConnectionFailureRetries;
 
-	public function __construct($appName, $appPassword, $serviceUrl, $baseUri, Curl $curl, $curlTimeout, $crowdConnectionFailureRetries, $logger = null) {
+	public function __construct($appName, $appPassword, $serviceUrl, $baseUri, Curl $curl, $curlTimeout, $crowdConnectionFailureRetries, LoggerInterface $logger = null) {
 		$this->appName = $appName;
 		$this->appPassword = $appPassword;
 		$this->url = $serviceUrl . $baseUri;

@@ -5,9 +5,11 @@ namespace Nordeus\CrowdUserBundle\Util;
 use Nordeus\CrowdUserBundle\CrowdService\Exceptions\ApplicationAccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
+use Symfony\Component\Security\Http\HttpUtils;
 
 /**
  * By adding "access_denied_handler: crowd.access_denied_handler" to the firewall configuration in security.yml,
@@ -20,11 +22,11 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface {
 	private $router;
 
 	/**
-	 * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
-	 * @param \Symfony\Component\Security\Http\HttpUtils $httpUtils
-	 * @param \Symfony\Component\Routing\Router $router
+	 * @param HttpKernelInterface $httpKernel
+	 * @param HttpUtils $httpUtils
+	 * @param Router $router
 	 */
-	public function __construct($httpKernel, $httpUtils, $router) {
+	public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, Router $router) {
 		$this->httpKernel = $httpKernel;
 		$this->httpUtils = $httpUtils;
 		$this->router = $router;

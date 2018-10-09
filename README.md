@@ -36,7 +36,7 @@ public function registerBundles()
 ```
 # app/config/routing.yml
 crowd_user:
-    resource: "@NordeusCrowdUserBundle/Resources/config/crowd_user_routing.yml"
+    resource: "@NordeusCrowdUserBundle/Resources/config/routing.yml"
 ```
 
 If you intend to manually override some of CrowdUserBundle's routes (see step 6), make sure you include this _after_ your own bundle's config.

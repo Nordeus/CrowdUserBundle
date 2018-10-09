@@ -1,85 +1,77 @@
-parameters:
-    crowd.curl.class: Curl\Curl
-    crowd_service.class: Nordeus\CrowdUserBundle\CrowdService\CrowdService
-    crowd.user_provider.class: Nordeus\CrowdUserBundle\Security\User\UserProvider
-    crowd.security.authentication.provider.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
-    crowd.security.authentication.listener.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
-    crowd.security.authentication.listener.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener
-    crowd.security.authentication.success_handler.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler
-    crowd.security.logout.handler.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler
-    crowd.security.response_listener.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdResponseListener
-    crowd.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
-    crowd.rest.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\Rest\AccessDeniedHandler
-    crowd.rest.unauthorized_entry_point_handler.class: Nordeus\CrowdUserBundle\Util\Rest\UnauthorizedEntryPointHandler
-    crowd.rest.login_failure_handler.class: Nordeus\CrowdUserBundle\Util\Rest\LoginFailureHandler
-    crowd.rest.logout_success_handler.class: Nordeus\CrowdUserBundle\Util\Rest\LogoutSuccessHandler
-
 services:
-    crowd.curl:
-        class: "%crowd.curl.class%"
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    crowd.service:
-        class: "%crowd_service.class%"
+    Nordeus\CrowdUserBundle\:
+        resource: '../../*'
+        exclude: '../../{Entity,Migrations,Tests}'
+
+    Nordeus\CrowdUserBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    Curl\Curl: ~
+
+    Nordeus\CrowdUserBundle\CrowdService\CrowdService:
         arguments:
             $appName: "%nordeus_crowd_user.crowd_application_name%"
             $appPassword: "%nordeus_crowd_user.crowd_application_password%"
             $serviceUrl: "%nordeus_crowd_user.crowd_service_url%"
             $baseUri: "%nordeus_crowd_user.service_uri%"
-            $curl: "@crowd.curl"
             $curlTimeout: "%nordeus_crowd_user.curl_timeout%"
             $crowdConnectionFailureRetries: "%nordeus_crowd_user.connection_retries%"
-            $logger: "@logger"
 
     crowd.user_provider:
-        class: "%crowd.user_provider.class%"
+        class: "Nordeus\CrowdUserBundle\Security\User\UserProvider"
         arguments:
-            $crowdService: "@crowd.service"
             $rolesToCrowdGroupsMap: "%nordeus_crowd_user.roles_to_groups%"
             $userRefreshTime: "%nordeus_crowd_user.user_refresh_time%"
             $userClass: "%nordeus_crowd_user.user_class%"
-            $logger: "@logger"
 
     crowd.security.authentication.provider:
-        class: "%crowd.security.authentication.provider.class%"
-        arguments: ["", "@logger"]
+        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider"
+        arguments:
+            $userProvider: ~
 
     crowd.security.authentication.listener.login:
-        class: "%crowd.security.authentication.listener.login.class%"
+        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener"
         parent: security.authentication.listener.abstract
         abstract: true
-        arguments: ["%nordeus_crowd_user.sso_cookie_domain%"]
+        arguments:
+            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.authentication.listener.sso:
-        class: "%crowd.security.authentication.listener.sso.class%"
-        arguments: ["@security.token_storage", "@security.authentication.manager", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%", "@logger"]
+        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener"
+        arguments:
+            $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
+            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.authentication.success_handler.login:
-        class: "%crowd.security.authentication.success_handler.login.class%"
-        arguments: ["@security.http_utils", "", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%"]
+        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler"
+        arguments:
+            $options: []
+            $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
+            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.logout.handler.sso:
-        class: "%crowd.security.logout.handler.sso.class%"
-        arguments: ["%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%"]
-
-    crowd.security.response_listener:
-        class: "%crowd.security.response_listener.class%"
-        tags:
-            - name: "kernel.event_subscriber"
+        class: "Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler"
+        arguments:
+            $ssoCookieName: "%nordeus_crowd_user.sso_cookie_name%"
+            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.access_denied_handler:
-        class: "%crowd.access_denied_handler.class%"
-        arguments: ["@http_kernel", "@security.http_utils", "@router.default"]
+        class: "Nordeus\CrowdUserBundle\Util\AccessDeniedHandler"
 
     crowd.rest.access_denied_handler:
-        class: "%crowd.rest.access_denied_handler.class%"
+        class: "Nordeus\CrowdUserBundle\Util\Rest\AccessDeniedHandler"
 
     crowd.rest.unauthorized_entry_point_handler:
-        class: "%crowd.rest.unauthorized_entry_point_handler.class%"
+        class: "Nordeus\CrowdUserBundle\Util\Rest\UnauthorizedEntryPointHandler"
 
     crowd.rest.login_failure_handler:
-        class: "%crowd.rest.login_failure_handler.class%"
-        arguments: ["@http_kernel", "@security.http_utils"]
+        class: "Nordeus\CrowdUserBundle\Util\Rest\LoginFailureHandler"
 
     crowd.rest.logout_success_handler:
-        class: "%crowd.rest.logout_success_handler.class%"
-        arguments: ["@security.http_utils"]
+        class: "Nordeus\CrowdUserBundle\Util\Rest\LogoutSuccessHandler"

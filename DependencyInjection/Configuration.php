@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface {
 					->cannotBeEmpty()
 				->end()
 				->scalarNode('remember_me_signature')
-//					->setDeprecated()
+					->setDeprecated()
 				->end()
 				->arrayNode('roles_to_groups')
 					->isRequired()

@@ -26,7 +26,7 @@ class UserProvider implements UserProviderInterface {
 	 * @param string			$userClass
 	 * @param LoggerInterface	$logger
 	 */
-	public function __construct($crowdService, $rolesToCrowdGroupsMap, $userRefreshTime, $userClass, LoggerInterface $logger = null) {
+	public function __construct(CrowdService $crowdService, $rolesToCrowdGroupsMap, $userRefreshTime, $userClass, LoggerInterface $logger = null) {
 		$this->crowdService = $crowdService;
 		$this->rolesToCrowdGroupsMap = $rolesToCrowdGroupsMap;
 		$this->userRefreshTime = $userRefreshTime;
