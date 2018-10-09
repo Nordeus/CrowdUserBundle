@@ -1,0 +1,7 @@
+services:
+    crowd.security.authentication.listener.login:
+        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+        arguments:
+            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"

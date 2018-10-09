@@ -1,12 +1,11 @@
+imports:
+    - { resource: child_services.yaml }
+
 services:
     _defaults:
         autowire: true
         autoconfigure: true
         public: false
-
-    Nordeus\CrowdUserBundle\:
-        resource: '../../*'
-        exclude: '../../{Entity,Migrations,Tests}'
 
     Nordeus\CrowdUserBundle\Controller\:
         resource: '../../Controller'
@@ -34,13 +33,6 @@ services:
         class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
         arguments:
             $userProvider: ~
-
-    crowd.security.authentication.listener.login:
-        class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
-        parent: security.authentication.listener.abstract
-        abstract: true
-        arguments:
-            $ssoCookieDomain: "%nordeus_crowd_user.sso_cookie_domain%"
 
     crowd.security.authentication.listener.sso:
         class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener
