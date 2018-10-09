@@ -21,7 +21,7 @@ class CrowdSSOFactory implements SecurityFactoryInterface {
 	public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint) {
 		$providerId = 'security.authentication.provider.crowd.' . $id;
 		$provider = $container->setDefinition($providerId, new ChildDefinition('crowd.security.authentication.provider'));
-		$provider->replaceArgument(0, new Reference($userProvider));
+		$provider->replaceArgument('$userProvider', new Reference($userProvider));
 
 		$listenerId = 'security.authentication.listener.crowd.' . $id;
 		$container->setDefinition($listenerId, new ChildDefinition('crowd.security.authentication.listener.sso'));

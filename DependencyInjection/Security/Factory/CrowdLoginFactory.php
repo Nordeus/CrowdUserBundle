@@ -32,7 +32,7 @@ class CrowdLoginFactory extends AbstractFactory {
 		$providerId = 'security.authentication.provider.crowd.'.$id;
 		$container
 			->setDefinition($providerId, new ChildDefinition('crowd.security.authentication.provider'))
-			->replaceArgument(0, new Reference($userProviderId));
+			->replaceArgument('$userProvider', new Reference($userProviderId));
 
 		return $providerId;
 	}
@@ -50,7 +50,7 @@ class CrowdLoginFactory extends AbstractFactory {
 		if (isset($config['csrf_token_generator'])) {
 			$container
 				->getDefinition($listenerId)
-				->addArgument(new Reference($config['csrf_token_generator']));
+				->setArgument('$csrfTokenManager', new Reference($config['csrf_token_generator']));
 		}
 
 		return $listenerId;
@@ -65,7 +65,7 @@ class CrowdLoginFactory extends AbstractFactory {
 	protected function createAuthenticationSuccessHandler($container, $id, $config) {
 		$successHandlerId = $this->getSuccessHandlerId($id);
 		$successHandler = $container->setDefinition($successHandlerId, new ChildDefinition('crowd.security.authentication.success_handler.login'));
-		$successHandler->replaceArgument(1, array_intersect_key($config, $this->defaultSuccessHandlerOptions));
+		$successHandler->replaceArgument('$options', array_intersect_key($config, $this->defaultSuccessHandlerOptions));
 		$successHandler->addMethodCall('setProviderKey', array($id));
 
 		return $successHandlerId;
@@ -75,9 +75,9 @@ class CrowdLoginFactory extends AbstractFactory {
 		$entryPointId = 'security.authentication.form_entry_point.' . $id;
 		$container
 			->setDefinition($entryPointId, new ChildDefinition('security.authentication.form_entry_point'))
-			->addArgument(new Reference('security.http_utils'))
-			->addArgument($config['login_path'])
- 			->addArgument($config['use_forward']);
+			->setArgument('$httpUtils', new Reference('security.http_utils'))
+			->setArgument('$loginPath', $config['login_path'])
+ 			->setArgument('$useForward', $config['use_forward']);
 
 		return $entryPointId;
 	}
