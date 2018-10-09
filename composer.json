@@ -16,7 +16,7 @@
             "email": "djordje.cvijic.etf@gmail.com"
         }
     ],
-    "licence": "MIT",
+    "license": "MIT",
     "require": {
         "php": "^5.4.0||^7.0",
         "php-curl-class/php-curl-class": "^6.0",
