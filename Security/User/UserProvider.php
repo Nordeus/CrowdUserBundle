@@ -99,16 +99,6 @@ class UserProvider implements UserProviderInterface {
 	}
 
 	/**
-	 * Creates Crowd session token without password (used for remember me service).
-	 *
-	 * @param string $username
-	 * @return string
-	 */
-	public function createCrowdSessionTokenWithoutPassword($username) {
-		return $crowdSessionToken = $this->crowdService->createSessionTokenWithoutPassword($username);
-	}
-
-	/**
 	 * Gets User from Crowd by Crowd session token.
 	 *
 	 * @param string $crowdSessionToken

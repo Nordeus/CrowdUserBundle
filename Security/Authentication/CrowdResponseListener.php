@@ -15,10 +15,6 @@ class CrowdResponseListener implements EventSubscriberInterface {
 		$request = $event->getRequest();
 		$response = $event->getResponse();
 
-		if ($request->attributes->has(CrowdRememberMeAuthenticationListener::SET_SSO_COOKIE_ATTR_NAME)) {
-			$response->headers->setCookie($request->attributes->get(CrowdRememberMeAuthenticationListener::SET_SSO_COOKIE_ATTR_NAME));
-		}
-
 		if ($request->attributes->has(CrowdSSOAuthenticationListener::CANCEL_SSO_COOKIE_ATTR_NAME)) {
 			$response->headers->setCookie($request->attributes->get(CrowdSSOAuthenticationListener::CANCEL_SSO_COOKIE_ATTR_NAME));
 		}

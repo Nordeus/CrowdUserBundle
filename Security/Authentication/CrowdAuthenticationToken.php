@@ -8,7 +8,6 @@ class CrowdAuthenticationToken extends AbstractToken {
 
 	const AUTH_TYPE_SSO = 1;
 	const AUTH_TYPE_LOGIN = 2;
-	const AUTH_TYPE_REMEMBER_ME = 3;
 
 	/**
 	 * It is used by Login Listener to pass user's password to Authentication Provider.

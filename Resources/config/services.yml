@@ -5,9 +5,7 @@ parameters:
     crowd.security.authentication.provider.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdAuthenticationProvider
     crowd.security.authentication.listener.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginAuthenticationListener
     crowd.security.authentication.listener.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOAuthenticationListener
-    crowd.security.authentication.listener.remember_me.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdRememberMeAuthenticationListener
     crowd.security.authentication.success_handler.login.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdLoginSuccessHandler
-    crowd.security.remember_me.service.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdRememberMeService
     crowd.security.logout.handler.sso.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdSSOLogoutHandler
     crowd.security.response_listener.class: Nordeus\CrowdUserBundle\Security\Authentication\CrowdResponseListener
     crowd.access_denied_handler.class: Nordeus\CrowdUserBundle\Util\AccessDeniedHandler
@@ -55,17 +53,9 @@ services:
         class: "%crowd.security.authentication.listener.sso.class%"
         arguments: ["@security.token_storage", "@security.authentication.manager", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%", "@logger"]
 
-    crowd.security.authentication.listener.remember_me:
-        class: "%crowd.security.authentication.listener.remember_me.class%"
-        arguments: ["@security.token_storage", "", "@security.authentication.manager", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%", "@logger", "@event_dispatcher"]
-
     crowd.security.authentication.success_handler.login:
         class: "%crowd.security.authentication.success_handler.login.class%"
         arguments: ["@security.http_utils", "", "%nordeus_crowd_user.sso_cookie_name%", "%nordeus_crowd_user.sso_cookie_domain%"]
-
-    crowd.security.authentication.rememberme.services:
-        class: "%crowd.security.remember_me.service.class%"
-        arguments: ["", "", "%nordeus_crowd_user.remember_me_signature%", "@logger"]
 
     crowd.security.logout.handler.sso:
         class: "%crowd.security.logout.handler.sso.class%"

@@ -51,7 +51,6 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 	 * Firewall listeners could be:
 	 *  - SSO listener - provides crowdCookieSessionToken
 	 *  - Login listener - provides username and password
-	 *  - Remember-me listener - provides only username
 	 *
 	 * @param CrowdAuthenticationToken|TokenInterface $token
 	 * @return CrowdAuthenticationToken
@@ -72,14 +71,6 @@ class CrowdAuthenticationProvider implements AuthenticationProviderInterface {
 				case CrowdAuthenticationToken::AUTH_TYPE_LOGIN:
 					$password = $token->getPlainPassword();
 					$crowdCookieSessionToken = $this->userProvider->createCrowdSessionToken($username, $password);
-					break;
-
-				case CrowdAuthenticationToken::AUTH_TYPE_REMEMBER_ME:
-					if (!empty($username) && is_string($username)) {
-						$crowdCookieSessionToken = $this->userProvider->createCrowdSessionTokenWithoutPassword($username);
-					} else {
-						return null;
-					}
 					break;
 
 				default:

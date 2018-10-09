@@ -111,35 +111,6 @@ class CrowdService {
 	}
 
 	/**
-	 * @param string $username
-	 * @throws CrowdException if invalid response is returned from Crowd
-	 * @return string token
-	 * @link https://developer.atlassian.com/display/CROWDDEV/Crowd+REST+Resources
-	 */
-	public function createSessionTokenWithoutPassword($username) {
-		$data = array(
-			'username' => $username,
-			'validation-factors' => array(
-				'validationFactors' => array(
-					array(
-						'name' => 'remote_address',
-						'value' => $_SERVER['REMOTE_ADDR'],
-					)
-				)
-			)
-		);
-
-		$action = 'session?validate-password=false';
-		$data = $this->getCurlResponse($action, true, json_encode($data), 201);
-
-		if (!isset($data['token'])) {
-			throw new CrowdUnexpectedException('No token field in Crowd response', $action, $data);
-		}
-
-		return $data['token'];
-	}
-
-	/**
 	 * @param string $token Crowd token
 	 * @throws CrowdException if token is not valid or some other invalid response is returned from Crowd
 	 * @return array of raw user data array got from Crowd

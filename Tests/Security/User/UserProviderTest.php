@@ -171,14 +171,7 @@ class UserProviderTest extends TestCase {
 			->with(self::USERNAME, self::PASSWORD)
 			->will($this->returnValue(self::CROWD_SESSION_TOKEN));
 
-		$this->crowdService
-			->expects($this->once())
-			->method('createSessionTokenWithoutPassword')
-			->with(self::USERNAME)
-			->will($this->returnValue(self::CROWD_SESSION_TOKEN));
-
 		$this->assertEquals(self::CROWD_SESSION_TOKEN, $this->userProvider->createCrowdSessionToken(self::USERNAME, self::PASSWORD));
-		$this->assertEquals(self::CROWD_SESSION_TOKEN, $this->userProvider->createCrowdSessionTokenWithoutPassword(self::USERNAME));
 	}
 
 

@@ -51,7 +51,6 @@ nordeus_crowd_user:
     crowd_application_name: crowd_application_name
     crowd_service_url: http://crowd.your_domain.com:8095
     sso_cookie_domain: your_domain.com
-    remember_me_signature: remember_me_signature
     crowd_application_password: crowd_application_password
     roles_to_groups:
         role1: [ groupA, groupB ]
@@ -109,7 +108,6 @@ security:
                 check_path: nordeus_crowd_user_login_check
                 default_target_path: /
             crowd_sso: true
-            crowd-remember-me: true
             logout:
                 path: nordeus_crowd_user_logout
             anonymous: ~
@@ -175,7 +173,6 @@ security:
                 check_path: nordeus_crowd_user_login_check
                 default_target_path: /
             crowd_sso: true
-            crowd-remember-me: true
             logout:
                 path: nordeus_crowd_user_logout
             anonymous: ~
@@ -214,19 +211,19 @@ Let's list those listeners.
 	- Checks if token is authenticated, if it is not tries to authenticate the token by passing the token to AuthenticationManager.
 
 "Custom Listeners" are where some other Authentication Listeners could be attached.
-In this implementation there are three Listeners: Crowd**Login**AuthenticationListener, Crowd**SSO**AuthenticationListener, and Crowd**RememberMe**AuthenticationListener.
+In this implementation there are two Listeners: Crowd**Login**AuthenticationListener and Crowd**SSO**AuthenticationListener.
 The process of "registering" authentication listeners is done through factories which implement the SecurityFactoryInterface (DependencyInjection/Security/Factory).
 This interface says that you have to define:
 
 - *position* where the listener will be put in the "Custom Listeners" section, it could take on of the values: *pre_auth*, *form*, *http*, and *remember-me*.
 - *key*, which identifies your factory.
-In the config (above) we have enabled those factories by listing them in the firewall section (*crowd_form_login*, *crowd-sso*, *crowd-remember-me*).
+In the config (above) we have enabled those factories by listing them in the firewall section (*crowd_form_login* and *crowd-sso*).
 - *create* method which should create *entry point*, *authentication listener*, and *authentication provider*.
 - *addConfiguration* used for defining parameters that the factory uses. In the example above, *crowd_form_login* factory uses *login_path* and *check_path*.
 
 Now that we have have attached listeners to the firewall, the authentication flow is:
 Authentication Listener should take some data from the request (Login Listener takes username and password from login form,
-SSO Listener takes SSOCookieToken, and RememberMe Listener takes username from remember-me cookie),
+SSO Listener takes SSOCookieToken),
 then the listener creates CrowdAuthenticationToken and fills it with the data, the listener invokes authentication of the token.
 CrowdAuthenticationProvider receives the auth. token, fetches a CrowdUser from UserProvider with data provided in the auth. token,
 stores the CrowdUser in the auth. token. the listener gets the auth. token back, and then it marks the token as authenticated and stores it in the context.
@@ -236,16 +233,15 @@ Symfony already provides the AbstractAuthenticationListener which CrowdLoginAuth
 AbstractAuthenticationListener does some checks (such as checking if the requested path is the path to the login page),
 then invokes attemptAuthentication method in CrowdLoginAuthenticationListener.
 The method should return the CrowdAuthenticatedToken provided by CrowdAuthenticationProvider,
-then AbstractAuthenticationListener invokes SuccessHandler, and loginSuccess method if RememberMe service is set.
+then AbstractAuthenticationListener invokes SuccessHandler.
 So CrowdLoginAuthenticationListener fetches the username and password, sends them in the CrowdAuthenticationToken;
 CrowdLoginSuccessHandler sets an SSO Crowd cookie in the response;
-RememberMe service's method loginSuccess is called, which sets a remember-me cookie if it is required in the form.
 
 Now when the user is logged in, an auth. token is in the session.
 On every request, the Login Listener does nothing, except if request path matches login path.
 SSO Listener reads the SSO Crowd cookie and since there is an auth. token in the session it sets the authenticated flag on the token and returns it,
 it does not need to fetch user from Crowd server on every request.
-RememberMe listener finds the auth. token in the context and does nothing, the same for the Anonymous Listener.
+Anonymous Listener finds the auth. token in the context and does nothing.
 Access Listener checks if auth. token is authenticated - it is, and that's it. User stays authenticated.
 
 As mentioned above ContextListener invokes UserProvider's refreshUser method on every request,
@@ -253,4 +249,4 @@ It would be unnecessary to fetch user from Crowd on every request,
 UserProvider refreshes user only after "some" time, which is defined by a parameter.
 
 If a user requests logout, Logout Listener activates, goes through all its Logout Handlers and invokes their logout methods.
-CrowdSSOLogoutHandler deletes SSO Crowd cookie. CrowdRememberMeService is also a Logout Handler which deletes the remember-me cookie.
+CrowdSSOLogoutHandler deletes SSO Crowd cookie.

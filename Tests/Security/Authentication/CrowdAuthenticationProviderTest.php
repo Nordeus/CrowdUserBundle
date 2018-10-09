@@ -96,47 +96,6 @@ class CrowdAuthenticationProviderTest extends TestCase {
 		$this->assertEquals($expectedToken, $this->authenticationProvider->authenticate($crowdAuthToken));
 	}
 
-	public function testAuthRememberMe() {
-		$user = new CrowdUser();
-		$user->initWithCrowdData($this->crowdUserRawData);
-		$user->addRole('ROLE_USER');
-
-		$this->userProvider
-			->expects($this->once())
-			->method('createCrowdSessionTokenWithoutPassword')
-			->with(self::USERNAME)
-			->will($this->returnValue(self::CROWD_SESSION_TOKEN));
-
-		$this->userProvider
-			->expects($this->once())
-			->method('getUserByToken')
-			->with(self::CROWD_SESSION_TOKEN)
-			->will($this->returnValue($user));
-
-		$authType = CrowdAuthenticationToken::AUTH_TYPE_REMEMBER_ME;
-
-		$crowdAuthToken = new CrowdAuthenticationToken($authType, self::USERNAME);
-		$expectedToken = new CrowdAuthenticationToken($authType, $user, $user->getRoles());
-
-		$this->assertEquals($expectedToken, $this->authenticationProvider->authenticate($crowdAuthToken));
-	}
-
-	// Send Auth token, but with any expected data in it.
-	// provider should return null
-	public function testAuthWrongData() {
-		$this->userProvider
-			->expects($this->never())
-			->method('createCrowdSessionToken');
-
-		$this->userProvider
-			->expects($this->never())
-			->method('getUserByToken');
-
-		$crowdAuthToken = new CrowdAuthenticationToken($authType = CrowdAuthenticationToken::AUTH_TYPE_REMEMBER_ME);
-
-		$this->assertNull($this->authenticationProvider->authenticate($crowdAuthToken));
-	}
-
 	/**
 	 * @expectedException \Symfony\Component\Security\Core\Exception\AuthenticationException
 	 */
