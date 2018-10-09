@@ -8,19 +8,23 @@
             "email": "igore@nordeus.com"
         },
         {
+            "name": "Nikola Tisic",
+            "email": "nikolat@nordeus.com"
+        },
+        {
             "name": "Djordje Cvijic",
             "email": "djordje.cvijic.etf@gmail.com"
         }
     ],
     "licence": "MIT",
     "require": {
-        "php": ">=5.4.0",
-        "php-curl-class/php-curl-class": "~6",
-        "sensio/framework-extra-bundle" : "~3.0,>=3.0.2",
-        "symfony/symfony" : ">=2.6"
+        "php": "^5.4.0||^7.0",
+        "php-curl-class/php-curl-class": "^6.0",
+        "sensio/framework-extra-bundle": "^3.0.2||^5.0,<5.2",
+        "symfony/symfony": "^2.6||^3.0||^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.0"
+        "phpunit/phpunit": "^6.0"
     },
     "autoload": {
         "psr-0": { "Nordeus\\CrowdUserBundle": "" }

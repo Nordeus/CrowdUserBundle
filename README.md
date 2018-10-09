@@ -148,7 +148,6 @@ php app/console cache:clear
 TODO
 ---
 
-* Improve token refreshing & invalidation to act more like Atlassian apps
 * Simulate or disable authentication in test environment
 
 ---
