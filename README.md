@@ -34,9 +34,9 @@ public function registerBundles()
 ### 3. Import CrowdUserBundle routing file
 
 ```
-# app/config/routing.yml
+# app/config/routing.yaml
 crowd_user:
-    resource: "@NordeusCrowdUserBundle/Resources/config/routing.yml"
+    resource: "@NordeusCrowdUserBundle/Resources/config/routing.yaml"
 ```
 
 If you intend to manually override some of CrowdUserBundle's routes (see step 6), make sure you include this _after_ your own bundle's config.
@@ -46,7 +46,7 @@ If you intend to manually override some of CrowdUserBundle's routes (see step 6)
 These are required params:
 
 ```
-# app/config/config.yml
+# app/config/config.yaml
 nordeus_crowd_user:
     crowd_application_name: crowd_application_name
     crowd_service_url: http://crowd.your_domain.com:8095
@@ -61,7 +61,7 @@ Set up your *roles_to_groups* map by providing a list of Crowd groups for each S
 An example:
 
 ```
-# app/config/config.yml
+# app/config/config.yaml
 nordeus_crowd_user:
     # ...
     roles_to_groups:
@@ -75,7 +75,7 @@ nordeus_crowd_user:
 There are also optional params, which have default values. These params are:
 
 ```
-# app/config/config.yml
+# app/config/config.yaml
 nordeus_crowd_user:
     # ...
     user_class: Nordeus\CrowdUserBundle\Security\User\CrowdUser
@@ -91,7 +91,7 @@ If you want to extend CrowdUser, set *user_class* parameter with your user class
 ### 5. Configure your application's security
 
 ```
-# app/config/security.yml
+# app/config/security.yaml
 security:
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
@@ -157,12 +157,12 @@ Explanation
 
 Symfony Authentication is based on the following concept:
 
-In security section (app/config/security.yml) you have to define a firewall.
+In security section (app/config/security.yaml) you have to define a firewall.
 The most common case is that you define only one firewall - **main** firewall.
 Here is en example:
 
 ```
-# app/config/security.yml
+# app/config/security.yaml
 security:
     firewalls:
         main:

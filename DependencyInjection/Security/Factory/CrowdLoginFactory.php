@@ -4,7 +4,7 @@ namespace Nordeus\CrowdUserBundle\DependencyInjection\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -31,7 +31,7 @@ class CrowdLoginFactory extends AbstractFactory {
 	protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId) {
 		$providerId = 'security.authentication.provider.crowd.'.$id;
 		$container
-			->setDefinition($providerId, new DefinitionDecorator('crowd.security.authentication.provider'))
+			->setDefinition($providerId, new ChildDefinition('crowd.security.authentication.provider'))
 			->replaceArgument(0, new Reference($userProviderId));
 
 		return $providerId;
@@ -64,7 +64,7 @@ class CrowdLoginFactory extends AbstractFactory {
 	 */
 	protected function createAuthenticationSuccessHandler($container, $id, $config) {
 		$successHandlerId = $this->getSuccessHandlerId($id);
-		$successHandler = $container->setDefinition($successHandlerId, new DefinitionDecorator('crowd.security.authentication.success_handler.login'));
+		$successHandler = $container->setDefinition($successHandlerId, new ChildDefinition('crowd.security.authentication.success_handler.login'));
 		$successHandler->replaceArgument(1, array_intersect_key($config, $this->defaultSuccessHandlerOptions));
 		$successHandler->addMethodCall('setProviderKey', array($id));
 
@@ -74,7 +74,7 @@ class CrowdLoginFactory extends AbstractFactory {
 	protected function createEntryPoint($container, $id, $config, $defaultEntryPoint) {
 		$entryPointId = 'security.authentication.form_entry_point.' . $id;
 		$container
-			->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.form_entry_point'))
+			->setDefinition($entryPointId, new ChildDefinition('security.authentication.form_entry_point'))
 			->addArgument(new Reference('security.http_utils'))
 			->addArgument($config['login_path'])
  			->addArgument($config['use_forward']);

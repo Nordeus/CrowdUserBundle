@@ -21,10 +21,10 @@ class NordeusCrowdUserExtension extends Extension {
 		$config = $this->processConfiguration($configuration, $configs);
 
 		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-		$loader->load('services.yml');
+		$loader->load('services.yaml');
 
 		// All parameters set under 'nordeus_crowd_user' section (defined in DependencyInjection/Configuration.php)
-		// will be set as parameters, afterwards they will be visible in services.yml
+		// will be set as parameters, afterwards they will be visible in services.yaml
 		foreach ($config as $name => $value) {
 			$container->setParameter('nordeus_crowd_user.' . $name, $value);
 		}

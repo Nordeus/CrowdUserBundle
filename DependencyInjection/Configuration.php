@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface {
 	 * {@inheritDoc}
 	 */
 	public function getConfigTreeBuilder() {
-		// All parameters that user can set are under nordeus_crowd_user section in user's config file (app/config/config.yml)
+		// All parameters that user can set are under nordeus_crowd_user section in user's config file (app/config/config.yaml)
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('nordeus_crowd_user');
 

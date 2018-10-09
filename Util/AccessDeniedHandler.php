@@ -12,7 +12,7 @@ use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 use Symfony\Component\Security\Http\HttpUtils;
 
 /**
- * By adding "access_denied_handler: crowd.access_denied_handler" to the firewall configuration in security.yml,
+ * By adding "access_denied_handler: crowd.access_denied_handler" to the firewall configuration in security.yaml,
  * this class will serve to handle "access denied" exceptions by writing the error to the security context, and forwarding to login page.
  */
 class AccessDeniedHandler implements AccessDeniedHandlerInterface {
