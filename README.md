@@ -17,7 +17,12 @@ Execute the following in your project's root directory:
 composer require nordeus/crowd-user-bundle
 ```
 
-### 2. Enable the bundle in the kernel:
+#### If you are using Symfony Flex
+
+The bundle has automatically been registered and configured for you!
+Simply use config/packages/security.yaml.example as a starting point to configure your security.yaml file, and skip to step 6.
+
+### 2. Enable the bundle in the kernel
 
 ```
 <?php
@@ -122,7 +127,7 @@ The *default_target_path* key is optional and may be reconfigured, it is the pat
 
 The *access_denied_handler* key is optional, and will cause *access denied* errors to redirect to the login page with an error message instead of breaking the request.
 
-### 6. Override some of CrowdUserBundle's functionality (optional)
+### 6. (optional) Override some of CrowdUserBundle's functionality
 
 Suppose you want to override a controller (change some of the business logic) or a resource (template, routing, etc) from CrowdUserBundle.
 There are two possible approaches:
@@ -137,7 +142,7 @@ Read the basics of setting up bundle inheritance and follow the instructions [**
 In your own bundle, define a route using an existing CrowdUserBundle path, just have it target one of your own actions.
 If you need some part of the original functionality, extend the original controller/template.
 
-### 7. Clear the Symfony cache:
+### 7. Clear the Symfony cache
 
 ```
 php app/console cache:clear
