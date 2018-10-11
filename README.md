@@ -145,7 +145,7 @@ If you need some part of the original functionality, extend the original control
 ### 7. Clear the Symfony cache
 
 ```
-php app/console cache:clear
+php bin/console cache:clear
 ```
 
 ---
