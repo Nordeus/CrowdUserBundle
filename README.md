@@ -2,7 +2,7 @@
 CrowdUserBundle
 ========================
 
-CrowdUserBundle is Symfony bundle used for fetching users and authenticating them against Atlassian Crowd.
+CrowdUserBundle is a Symfony bundle used for fetching users and authenticating them against Atlassian Crowd.
 
 ---
 
@@ -19,28 +19,24 @@ composer require nordeus/crowd-user-bundle
 
 #### If you are using Symfony Flex
 
-The bundle has automatically been registered and configured for you!
-Simply use config/packages/security.yaml.example as a starting point to configure your security.yaml file, and skip to step 6.
+The bundle has automatically been registered and configured for you! Skip to step 4.
 
 ### 2. Enable the bundle in the kernel
 
 ```
 <?php
-// app/AppKernel.php
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-        new Nordeus\CrowdUserBundle\NordeusCrowdUserBundle(),
-    );
-}
+// config/bundles.php
+return [
+	// ...
+	Nordeus\CrowdUserBundle\NordeusCrowdUserBundle::class => ['all' => true],
+];
 ```
 
 ### 3. Import CrowdUserBundle routing file
 
 ```
-# app/config/routing.yaml
-crowd_user:
+# config/routes/nordeus_crowd_user.yaml
+nordeus_crowd_user:
     resource: "@NordeusCrowdUserBundle/Resources/config/routing.yaml"
 ```
 
@@ -48,39 +44,26 @@ If you intend to manually override some of CrowdUserBundle's routes (see step 6)
 
 ### 4. Configure parameters
 
-These are required params:
+#### These are required params:
 
 ```
-# app/config/config.yaml
+# config/packages/nordeus_crowd_user.yaml
 nordeus_crowd_user:
     crowd_application_name: crowd_application_name
+    crowd_application_password: crowd_application_password
     crowd_service_url: http://crowd.your_domain.com:8095
     sso_cookie_domain: your_domain.com
-    crowd_application_password: crowd_application_password
     roles_to_groups:
-        role1: [ groupA, groupB ]
-        role2: [ groupD, groupE ]
+        ROLE_USER: [ users ]
+        ROLE_ADMIN: [ admins, superadmins ]
 ```
 
 Set up your *roles_to_groups* map by providing a list of Crowd groups for each Symfony role that users in those groups should receive.
-An example:
+
+#### There are also optional params, which have default values. These params are:
 
 ```
-# app/config/config.yaml
-nordeus_crowd_user:
-    # ...
-    roles_to_groups:
-        ROLE_USER:
-            - users
-        ROLE_ADMIN:
-            - superadmins
-            - developers
-```
-
-There are also optional params, which have default values. These params are:
-
-```
-# app/config/config.yaml
+# config/packages/nordeus_crowd_user.yaml
 nordeus_crowd_user:
     # ...
     user_class: Nordeus\CrowdUserBundle\Security\User\CrowdUser
@@ -96,7 +79,7 @@ If you want to extend CrowdUser, set *user_class* parameter with your user class
 ### 5. Configure your application's security
 
 ```
-# app/config/security.yaml
+# config/packages/security.yaml
 security:
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
