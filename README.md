@@ -182,14 +182,14 @@ Let's list those listeners.
 	- Checks if session exists, takes auth. token from session (if auth. token exists in the session)
 	- Gets user from auth. token, then refreshes user by calling UserProvider's refreshUser method; afterwards saves the user in an auth. token and store the token in context.
 	- Listens on *onKernelResponse* event - The aim is that it takes the auth. token at the end (if it is still present in context) and stores it back in the session.
-- Logout Listener - Active if it is enabled in config. ("logout: " ... )
-	- Checks if *logout path* is requested.
-	If it is, invokes its Logout Handlers (which could delete some cookies), sets null in context and returns response to the firewall, which interrupts further authentication.
 - "Custom Listeners" - will be explained later, those are:
 	- *pre_auth* Listeners
 	- *form* Listeners
 	- *http* Listeners
 	- *remember-me* Listeners
+- Logout Listener - Active if it is enabled in config. ("logout: " ... )
+	- Checks if *logout path* is requested.
+	If it is, invokes its Logout Handlers (which could delete some cookies), sets null in context and returns response to the firewall, which interrupts further authentication.
 - Anonymous Listener - active only if it is enabled config ("anonymous: ~")
 	- At this point the listeners have had a chance to generate an auth. token.
 	- If no one did that (null set in context) it generates AnonymousToken and sets it in context.
